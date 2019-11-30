@@ -22,15 +22,14 @@ add_definitions(
 )
 
 # third_party
-set(THIRD_PARTY_PATH /home/yangjl/workspace/third_party)
+set(THIRD_PARTY_PATH ../third_party)
 
 # 包含路径
 include_directories(
         include/utility
         ${THIRD_PARTY_PATH}/asio-1.12.2/include
-        ${THIRD_PARTY_PATH}/boost_1_69_0/include
-        ${THIRD_PARTY_PATH}/protobuf-3.6.1/include
-        ${THIRD_PARTY_PATH}/libiconv_1_15/include
+        ${THIRD_PARTY_PATH}/boost_1_71_0/include
+        ${THIRD_PARTY_PATH}/protobuf-3.11.0/include
 )
 
 # src

@@ -1,3 +1,4 @@
+
 #include "session/tcp/session_asio.h"
 #include "session/tcp/session_manager.h"
 #include "logger/boost_logger.hpp"
@@ -10,15 +11,15 @@ namespace utility
 /* SessionTcpImme */
 //////////////////////////////////////////////////////////////////////////
 SessionTcpImme::SessionTcpImme(socket_type socket,
-        manager_ptr_type session_manager_ptr,
-        func_request_parser func_request_parser_method,
-        func_disconnect_cb func_disconnect_callback,
-        func_receive_cb func_receive_callback,
-        size_type queue_max_size/* = 0*/)
-:SessionImpl(func_request_parser_method,func_disconnect_callback, func_receive_callback),
- session_manager_ptr_(session_manager_ptr),
- socket_(std::move(socket)),
- data_queue_max_size_(queue_max_size)
+                               manager_ptr_type session_manager_ptr,
+                               func_request_parser func_request_parser_method,
+                               func_disconnect_cb func_disconnect_callback,
+                               func_receive_cb func_receive_callback,
+                               size_type queue_max_size /* = 0*/)
+    : SessionImpl(func_request_parser_method, func_disconnect_callback, func_receive_callback),
+      session_manager_ptr_(session_manager_ptr),
+      socket_(std::move(socket)),
+      data_queue_max_size_(queue_max_size)
 {
 }
 
@@ -72,7 +73,7 @@ int SessionTcpImme::AsyncSend(const char *data, size_type length)
     }
 }
 
-const SessionTcpImme::socket_type & SessionTcpImme::socket() const
+const SessionTcpImme::socket_type &SessionTcpImme::socket() const
 {
     return socket_;
 }
@@ -205,16 +206,16 @@ void SessionTcpImme::on_receive(int type, char *data, int length)
 /* SessionTcpTmot */
 //////////////////////////////////////////////////////////////////////////
 SessionTcpTmot::SessionTcpTmot(socket_type socket,
-        manager_ptr_type session_manager_ptr,
-        func_request_parser func_request_parser_method,
-        func_disconnect_cb func_disconnect_callback,
-        func_receive_cb func_receive_callback,
-        size_type queue_max_size/* = 0*/)
-:SessionTcpImme(std::move(socket), session_manager_ptr, func_request_parser_method, func_disconnect_callback, func_receive_callback, queue_max_size),
- recv_deadline_(socket_.get_io_service()),
- send_deadline_(socket_.get_io_service()),
- non_empty_send_queue_(socket_.get_io_service()),
- heartbeat_timer_(socket_.get_io_service())
+                               manager_ptr_type session_manager_ptr,
+                               func_request_parser func_request_parser_method,
+                               func_disconnect_cb func_disconnect_callback,
+                               func_receive_cb func_receive_callback,
+                               size_type queue_max_size /* = 0*/)
+    : SessionTcpImme(std::move(socket), session_manager_ptr, func_request_parser_method, func_disconnect_callback, func_receive_callback, queue_max_size),
+      recv_deadline_(socket_.get_executor()),
+      send_deadline_(socket_.get_executor()),
+      non_empty_send_queue_(socket_.get_executor()),
+      heartbeat_timer_(socket_.get_executor())
 {
     recv_deadline_.expires_at(time_point_type::max());
     send_deadline_.expires_at(time_point_type::max());
@@ -361,15 +362,15 @@ void SessionTcpTmot::check_heartbeat()
  * @param queue_max_size
  */
 SessionTcpClient::SessionTcpClient(asio::io_service &io_service,
-        func_request_parser func_request_parser_method,
-        func_disconnect_cb func_disconnect_callback,
-        func_receive_cb func_receive_callback,
-        std::string login_query_buf,
-        std::string heart_beat_buf,
-        size_type queue_max_size)
-:SessionTcpTmot(socket_type(io_service), nullptr, func_request_parser_method, func_disconnect_callback, func_receive_callback, queue_max_size),
- reconnect_(false),
- login_query_data_(login_query_buf)
+                                   func_request_parser func_request_parser_method,
+                                   func_disconnect_cb func_disconnect_callback,
+                                   func_receive_cb func_receive_callback,
+                                   std::string login_query_buf,
+                                   std::string heart_beat_buf,
+                                   size_type queue_max_size)
+    : SessionTcpTmot(socket_type(io_service), nullptr, func_request_parser_method, func_disconnect_callback, func_receive_callback, queue_max_size),
+      reconnect_(false),
+      login_query_data_(login_query_buf)
 {
     heartbeat_data_ = heart_beat_buf;
 }
@@ -419,9 +420,9 @@ void SessionTcpClient::handle_stop()
 
         // 延迟5s进行重连
         auto _self = std::dynamic_pointer_cast<SessionTcpClient>(shared_from_this());
-        auto delay_timer = std::make_shared<timer_type>(socket_.get_io_service());
+        auto delay_timer = std::make_shared<timer_type>(socket_.get_executor());
         delay_timer->expires_after(asio::chrono::seconds(5));
-        delay_timer->async_wait(std::bind([this, delay_timer, _self](){ connect(); }));
+        delay_timer->async_wait(std::bind([this, delay_timer, _self]() { connect(); }));
     }
     else
     {
@@ -432,7 +433,7 @@ void SessionTcpClient::handle_stop()
 void SessionTcpClient::connect()
 {
     lock_guard_type lg(addr_mutex_);
-    resolver_type rsl(socket_.get_io_service());
+    resolver_type rsl(socket_.get_executor());
     resolver_type::iterator endpoint_iter = rsl.resolve(remote_host_, remote_port_);
 
     if (endpoint_iter != resolver_type::iterator())
@@ -488,12 +489,12 @@ void SessionTcpClient::handle_connect(std::error_code ec, resolver_type::iterato
 * @param[ in] queue_max_size 发送队列上限 默认0不限制
 */
 SessionHTTP::SessionHTTP(socket_type socket,
-        manager_ptr_type session_manager_ptr,
-        func_request_parser func_request_parser_method,
-        func_disconnect_cb func_disconnect_callback,
-        func_receive_cb func_receive_callback,
-        size_type queue_max_size/* = 0*/)
-        : SessionTcpTmot(std::move(socket), session_manager_ptr, func_request_parser_method, func_disconnect_callback, func_receive_callback, queue_max_size)
+                         manager_ptr_type session_manager_ptr,
+                         func_request_parser func_request_parser_method,
+                         func_disconnect_cb func_disconnect_callback,
+                         func_receive_cb func_receive_callback,
+                         size_type queue_max_size /* = 0*/)
+    : SessionTcpTmot(std::move(socket), session_manager_ptr, func_request_parser_method, func_disconnect_callback, func_receive_callback, queue_max_size)
 {
 }
 
@@ -518,7 +519,7 @@ void SessionHTTP::handle_async_recv()
                 http_request_.reset();
                 AsyncSend(string_buf.c_str(), string_buf.length());
             }
-                // 请求错误
+            // 请求错误
             else if (result == HTTPRequest::bad)
             {
                 // 请求错误处理
@@ -528,7 +529,7 @@ void SessionHTTP::handle_async_recv()
                 http_request_.reset();
                 AsyncSend(string_buf.c_str(), string_buf.length());
             }
-                // 包不完全 继续接收
+            // 包不完全 继续接收
             else
             {
                 // 不足一包 继续接收
@@ -601,5 +602,5 @@ void SessionHTTP::handle_async_send()
         }
     });
 }
-}//namespace utility
-}//namespace diy
+} //namespace utility
+} //namespace diy

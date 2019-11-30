@@ -59,7 +59,7 @@ public:
             {
                 logging::init_from_stream(conf_ifs);
             }
-            catch (const std::exception& ep)
+            catch (const std::exception &ep)
             {
                 std::cout << "InitLoggerEnv failed err:" << ep.what() << std::endl;
                 return false;
@@ -75,7 +75,7 @@ public:
 
 private:
 };
-}//namespace utility
-}//namespace diy
+} //namespace utility
+} //namespace diy
 
-#endif//!utility_include_utility_logger_boost_logger_hpp
+#endif //!utility_include_utility_logger_boost_logger_hpp

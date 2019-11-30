@@ -31,12 +31,12 @@ public:
             otl_var_desc *tmp_var_desc_ptr = _otl_stream.describe_next_out_var();
 
             int tmp_ftype = -1;
-            if (tmp_var_desc_ptr!=NULL)
+            if (tmp_var_desc_ptr != NULL)
             {
                 tmp_ftype = tmp_var_desc_ptr->ftype;
             }
 
-            switch(tmp_ftype)
+            switch (tmp_ftype)
             {
             case otl_var_char:
             {
@@ -76,21 +76,21 @@ public:
                 _f_type = 2;
                 otl_long_string _long_str;
                 otl_lob_stream _lob;
-                _otl_stream >> _lob;    
+                _otl_stream >> _lob;
 #ifdef OTL_ODBC_MSSQL_2008
-                while(!_lob.eof())
+                while (!_lob.eof())
                 {
                     std::string _buff_str;
                     _lob >> _long_str;
                     if (_long_str.len() > 0)
                     {
                         _buff_str.resize(_long_str.len());
-                        int convert_ret = iconv_convert("utf-8", "gbk", &_buff_str[0], _buff_str.length(), 
-                            reinterpret_cast<const char*>(_long_str.v), _long_str.len());
+                        int convert_ret = iconv_convert("utf-8", "gbk", &_buff_str[0], _buff_str.length(),
+                                                        reinterpret_cast<const char *>(_long_str.v), _long_str.len());
                         if (convert_ret < 0)
                         {
                             _buff_str.resize(0);
-                            _buff_str = std::string(reinterpret_cast<const char*>(_long_str.v), _long_str.len());
+                            _buff_str = std::string(reinterpret_cast<const char *>(_long_str.v), _long_str.len());
                         }
                         else
                         {
@@ -100,12 +100,12 @@ public:
                     _field_str += _buff_str;
                 }
 #else
-                    // oracle时设置环境变量ZHS16GBK即可不需要转换
-                    // mysql时使用libmyodbc8a.so ANSI Driver
-                while(!_lob.eof())
+                // oracle时设置环境变量ZHS16GBK即可不需要转换
+                // mysql时使用libmyodbc8a.so ANSI Driver
+                while (!_lob.eof())
                 {
                     _lob >> _long_str;
-                    std::string buff_str(reinterpret_cast<const char*>(_long_str.v), _long_str.len());
+                    std::string buff_str(reinterpret_cast<const char *>(_long_str.v), _long_str.len());
                     _field_str += buff_str;
                 }
                 if (_field_str == " ")
@@ -170,7 +170,7 @@ public:
             }
             return tmp_ftype;
         }
-        catch(const otl_exception& e)
+        catch (const otl_exception &e)
         {
             _otl_stream.close();
             return -1;
@@ -183,7 +183,7 @@ public:
         {
             int f_type = 0;
             int desc_num = 0;
-            /*otl_column_desc *column_desc_ = */_otl_stream.describe_select(desc_num);
+            /*otl_column_desc *column_desc_ = */ _otl_stream.describe_select(desc_num);
             std::vector<std::string> v_tmp_record;
             v_tmp_record.resize(desc_num);
             for (int j = 0; j < desc_num; ++j)
@@ -195,7 +195,7 @@ public:
     }
 };
 
-}
-}
+} // namespace utility
+} // namespace diy
 
-#endif//!utility_include_utility_database_otl_otl_tools_hpp
+#endif //!utility_include_utility_database_otl_otl_tools_hpp

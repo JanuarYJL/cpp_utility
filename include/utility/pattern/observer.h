@@ -20,7 +20,7 @@ public:
 
     virtual void Notify() = 0;
 };
-}//namespace utility
-}//namespace diy
+} //namespace utility
+} //namespace diy
 
-#endif//!utility_include_utility_pattern_observer_h
+#endif //!utility_include_utility_pattern_observer_h

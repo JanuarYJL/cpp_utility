@@ -4,7 +4,6 @@
 #include "package/data.hpp"
 #include "pattern/observer.h"
 #include "session/http/request.h"
-#include "logger/boost_logger.hpp" // tmptest
 
 namespace diy
 {
@@ -19,19 +18,20 @@ public:
     typedef std::lock_guard<mutex_type> lock_guard_type;
     typedef asio::steady_timer timer_type;
     typedef asio::steady_timer::time_point time_point_type;
-    typedef std::function<void(std::shared_ptr<SessionImpl>/*session_ptr*/, int/*sessionid*/, int/*reason*/)> func_disconnect_cb;
-    typedef std::function<void(std::shared_ptr<SessionImpl>/*session_ptr*/, int/*sessionid*/, int/*type*/, char * /*data*/, int/*length*/)> func_receive_cb;
-    typedef std::function<int(const DataImpl&/*data*/, int&/*type[out]*/)> func_request_parser;
+    typedef std::function<void(std::shared_ptr<SessionImpl> /*session_ptr*/, int /*sessionid*/, int /*reason*/)> func_disconnect_cb;
+    typedef std::function<void(std::shared_ptr<SessionImpl> /*session_ptr*/, int /*sessionid*/, int /*type*/, char * /*data*/, int /*length*/)> func_receive_cb;
+    typedef std::function<int(const DataImpl & /*data*/, int & /*type[out]*/)> func_request_parser;
 
     explicit SessionImpl(func_request_parser func_request_parser_method,
-                          func_disconnect_cb func_disconnect_callback,
-                          func_receive_cb func_receive_callback)
-                          : session_id_(0),
-                            func_disconnect_cb_(func_disconnect_callback),
-                            func_receive_callback_(func_receive_callback),
-                            func_request_parser_(func_request_parser_method)
-                          {UtilityBoostLogger(debug) << __FUNCTION__ << " this=" << this;}
-    virtual ~SessionImpl() {UtilityBoostLogger(debug) << __FUNCTION__ << " this=" << this << " sessionid=" << session_id_;}
+                         func_disconnect_cb func_disconnect_callback,
+                         func_receive_cb func_receive_callback)
+        : session_id_(0),
+          func_disconnect_cb_(func_disconnect_callback),
+          func_receive_callback_(func_receive_callback),
+          func_request_parser_(func_request_parser_method)
+    {
+    }
+    virtual ~SessionImpl() {}
 
     virtual void Start() = 0;
 
@@ -52,8 +52,8 @@ public:
 protected:
     int session_id_;
 
-    func_disconnect_cb  func_disconnect_cb_;
-    func_receive_cb     func_receive_callback_;
+    func_disconnect_cb func_disconnect_cb_;
+    func_receive_cb func_receive_callback_;
     func_request_parser func_request_parser_;
 };
 
@@ -80,11 +80,11 @@ public:
      * @param[ in] queue_max_size 发送队列上限 默认0不限制
      */
     explicit SessionTcpImme(socket_type socket,
-            manager_ptr_type session_manager_ptr,
-            func_request_parser func_request_parser_method,
-            func_disconnect_cb func_disconnect_callback,
-            func_receive_cb func_receive_callback,
-            size_type queue_max_size = 0);
+                            manager_ptr_type session_manager_ptr,
+                            func_request_parser func_request_parser_method,
+                            func_disconnect_cb func_disconnect_callback,
+                            func_receive_cb func_receive_callback,
+                            size_type queue_max_size = 0);
 
     /**
     * 启动
@@ -143,7 +143,12 @@ protected:
 class SessionTcpTmot : public SessionTcpImme
 {
 public:
-    enum timeout_sec { recv_timeout = 30, send_timeout = 30, heartbeat_sec = 10 };
+    enum timeout_sec
+    {
+        recv_timeout = 30,
+        send_timeout = 30,
+        heartbeat_sec = 10
+    };
 
     SessionTcpTmot(const SessionTcpTmot &) = delete;
 
@@ -156,11 +161,11 @@ public:
     * @param[ in] queue_max_size 发送队列上限 默认0不限制
     */
     explicit SessionTcpTmot(socket_type socket,
-            manager_ptr_type session_manager_ptr,
-            func_request_parser func_request_parser_method,
-            func_disconnect_cb func_disconnect_callback,
-            func_receive_cb func_receive_callback,
-            size_type queue_max_size = 0);
+                            manager_ptr_type session_manager_ptr,
+                            func_request_parser func_request_parser_method,
+                            func_disconnect_cb func_disconnect_callback,
+                            func_receive_cb func_receive_callback,
+                            size_type queue_max_size = 0);
 
     /**
     * 启动
@@ -220,12 +225,12 @@ public:
      * @param queue_max_size
      */
     explicit SessionTcpClient(asio::io_service &io_service,
-                                func_request_parser func_request_parser_method,
-                                func_disconnect_cb func_disconnect_callback,
-                                func_receive_cb func_receive_callback,
-                                std::string login_query_buf,
-                                std::string heart_beat_buf,
-                                size_type queue_max_size = 0);
+                              func_request_parser func_request_parser_method,
+                              func_disconnect_cb func_disconnect_callback,
+                              func_receive_cb func_receive_callback,
+                              std::string login_query_buf,
+                              std::string heart_beat_buf,
+                              size_type queue_max_size = 0);
 
     /**
     * 连接
@@ -281,11 +286,11 @@ public:
     * @param[ in] queue_max_size 发送队列上限 默认0不限制
     */
     explicit SessionHTTP(socket_type socket,
-            manager_ptr_type session_manager_ptr,
-            func_request_parser func_request_parser_method,
-            func_disconnect_cb func_disconnect_callback,
-            func_receive_cb func_receive_callback,
-            size_type queue_max_size = 0);
+                         manager_ptr_type session_manager_ptr,
+                         func_request_parser func_request_parser_method,
+                         func_disconnect_cb func_disconnect_callback,
+                         func_receive_cb func_receive_callback,
+                         size_type queue_max_size = 0);
 
 protected:
     virtual void handle_async_recv() override;
@@ -295,7 +300,7 @@ protected:
 private:
     HTTPRequest http_request_;
 };
-}//namespace utility
-}//namespace diy
+} //namespace utility
+} //namespace diy
 
-#endif//!utility_include_utility_session_tcp_session_asio_h
+#endif //!utility_include_utility_session_tcp_session_asio_h

@@ -28,14 +28,13 @@ public:
 
     enum result_type
     {
-        good, bad, indeterminate
+        good,
+        bad,
+        indeterminate
     };
 
     HTTPRequest()
-            : http_version_major_(0)
-            , http_version_minor_(0)
-            , state_(method_start)
-            , parse_bytes_(0)
+        : http_version_major_(0), http_version_minor_(0), state_(method_start), parse_bytes_(0)
     {
     }
 
@@ -65,7 +64,7 @@ public:
     * @param end iterator 终止迭代器
     * @return tuple<解析结果, 解析长度>
     */
-    template<typename InputIterator>
+    template <typename InputIterator>
     std::tuple<result_type, size_type> parse(InputIterator begin, InputIterator end)
     {
         size_type parse_count = 0;
@@ -185,6 +184,6 @@ public:
     std::vector<HTTPHeader> headers_;
     std::string content_;
 };
-}//namespace utility
-}//namespace diy
-#endif//!utility_include_utility_session_http_request_h
+} //namespace utility
+} //namespace diy
+#endif //!utility_include_utility_session_http_request_h

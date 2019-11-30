@@ -9,16 +9,16 @@ namespace utility
 /* SessionMmanagerTCP */
 //////////////////////////////////////////////////////////////////////////
 SessionMmanagerTCP::SessionMmanagerTCP(const accept_conf_type &accept_conf_vec,
-        func_request_parser func_request_parser_method,
-        func_disconnect_cb func_disconnect_callback,
-        func_receive_cb func_receive_callback)
-        : session_id_alloter_(0),
-          session_max_num_(0),
-          session_queue_max_size_(0),
-          accept_conf_(accept_conf_vec),
-          func_disconnect_cb_(func_disconnect_callback),
-          func_receive_callback_(func_receive_callback),
-          func_request_parser_(func_request_parser_method)
+                                       func_request_parser func_request_parser_method,
+                                       func_disconnect_cb func_disconnect_callback,
+                                       func_receive_cb func_receive_callback)
+    : session_id_alloter_(0),
+      session_max_num_(0),
+      session_queue_max_size_(0),
+      accept_conf_(accept_conf_vec),
+      func_disconnect_cb_(func_disconnect_callback),
+      func_receive_callback_(func_receive_callback),
+      func_request_parser_(func_request_parser_method)
 {
 }
 
@@ -111,11 +111,11 @@ void SessionMmanagerTCP::AddOneSession(socket_type socket)
             session_ptr->set_session_id(save_sessio_id);
             session_map_[session_ptr->session_id()] = session_ptr;
             UtilityBoostLogger(info) << __FUNCTION__
-                              << " sessionid=" << session_ptr->session_id()
-                              << " remote_ep:" << session_ptr->socket().remote_endpoint().address().to_string()
-                              << "/" << session_ptr->socket().remote_endpoint().port()
-                              << " local_ep:" << session_ptr->socket().local_endpoint().address().to_string()
-                              << "/" << session_ptr->socket().local_endpoint().port();
+                                     << " sessionid=" << session_ptr->session_id()
+                                     << " remote_ep:" << session_ptr->socket().remote_endpoint().address().to_string()
+                                     << "/" << session_ptr->socket().remote_endpoint().port()
+                                     << " local_ep:" << session_ptr->socket().local_endpoint().address().to_string()
+                                     << "/" << session_ptr->socket().local_endpoint().port();
             session_ptr->Start();
         }
         catch (const std::exception &excp)
@@ -128,10 +128,10 @@ void SessionMmanagerTCP::AddOneSession(socket_type socket)
     {
         // error::error_session_full
         UtilityBoostLogger(info) << __FUNCTION__ << "session full"
-                          << " remote_ep:" << socket.remote_endpoint().address().to_string()
-                          << "/" << socket.remote_endpoint().port()
-                          << " local_ep:" << socket.local_endpoint().address().to_string()
-                          << "/" << socket.local_endpoint().port();
+                                 << " remote_ep:" << socket.remote_endpoint().address().to_string()
+                                 << "/" << socket.remote_endpoint().port()
+                                 << " local_ep:" << socket.local_endpoint().address().to_string()
+                                 << "/" << socket.local_endpoint().port();
     }
 }
 
@@ -182,10 +182,10 @@ int SessionMmanagerTCP::AsyncSend(int sessionid, const char *data, size_type len
 /* SessionMmanagerHTTP */
 //////////////////////////////////////////////////////////////////////////
 SessionMmanagerHTTP::SessionMmanagerHTTP(const accept_conf_type &accept_conf_vec,
-                                           func_request_parser func_request_parser_method,
-                                           func_disconnect_cb func_disconnect_callback,
-                                           func_receive_cb func_receive_callback)
-        : SessionMmanagerTCP(accept_conf_vec, func_request_parser_method, func_disconnect_callback, func_receive_callback)
+                                         func_request_parser func_request_parser_method,
+                                         func_disconnect_cb func_disconnect_callback,
+                                         func_receive_cb func_receive_callback)
+    : SessionMmanagerTCP(accept_conf_vec, func_request_parser_method, func_disconnect_callback, func_receive_callback)
 {
 }
 
@@ -220,5 +220,5 @@ void SessionMmanagerHTTP::DelOneSession(int session_id)
     lock_guard_type guard(session_mutex_);
     session_map_.erase(session_id);
 }
-}//namespace utility
-}//namespace diy
+} //namespace utility
+} //namespace diy

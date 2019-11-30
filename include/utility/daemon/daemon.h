@@ -19,6 +19,7 @@ public:
      * @return: 检验结果
      */
     static bool AlreadyRunning(const std::string &lock_file);
+
 private:
     /* data */
 };

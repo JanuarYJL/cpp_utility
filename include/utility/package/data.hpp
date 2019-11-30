@@ -17,7 +17,8 @@ class DataImpl
 public:
     enum
     {
-        default_size = 32 * 1024, per_alloc_size = 32 * 1024
+        default_size = 32 * 1024,
+        per_alloc_size = 32 * 1024
     };
     typedef std::string data_type;
     typedef std::size_t size_type;
@@ -30,7 +31,7 @@ public:
 
     DataImpl(const char *data, size_type length)
     {
-        data_.reserve((std::max)((size_type) default_size, length));
+        data_.reserve((std::max)((size_type)default_size, length));
         memcpy(const_cast<char *>(data_.data()), data, length);
         data_size_ = length;
     }
@@ -38,7 +39,7 @@ public:
     // 扩容
     void expansion()
     {
-        data_.reserve(data_.capacity() + (size_type) per_alloc_size);
+        data_.reserve(data_.capacity() + (size_type)per_alloc_size);
     }
 
     // 获取data_引用
@@ -87,7 +88,8 @@ public:
         if (off_pos >= data_size_) // 移动位置在有效数据之外
         {
             data_size_ = 0;
-        } else if (off_pos > 0) // 移动位置为0时不需要处理
+        }
+        else if (off_pos > 0) // 移动位置为0时不需要处理
         {
             data_size_ = data_size_ - off_pos;
             memmove(const_cast<char *>(data_.data()), data_.data() + off_pos, data_size_);
@@ -195,7 +197,7 @@ public:
     RequestHandler &operator=(const RequestHandler &) = delete;
 
     explicit RequestHandler(RequestParserImpl &parser)
-            : parser_ref_(parser)
+        : parser_ref_(parser)
     {
     }
 
@@ -212,7 +214,7 @@ public:
 private:
     RequestParserImpl &parser_ref_;
 };
-}//namespace utility
-}//namespace diy
+} //namespace utility
+} //namespace diy
 
-#endif//!utility_include_utility_package_data_hpp
+#endif //!utility_include_utility_package_data_hpp

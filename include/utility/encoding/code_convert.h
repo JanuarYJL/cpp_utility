@@ -1,10 +1,9 @@
 #ifndef utility_include_utility_encoding_code_convert_h
 #define utility_include_utility_encoding_code_convert_h
 
+#include <iconv.h>
 #include <cstring>
 #include <algorithm>
-
-#include "iconv.h"
 
 namespace diy
 {
@@ -49,8 +48,6 @@ static int iconv_convert(const char *from_code,
     {
         return -1;
     }
-    int argument = 0;
-    iconvctl(cd, ICONV_SET_DISCARD_ILSEQ, &argument);
     // conver by iconv
     size_t uisrclen = src_len;
     if (iconv(cd, (char **)(&src), &uisrclen, &dst, &uileftlen) == (size_t)-1)
@@ -64,6 +61,6 @@ static int iconv_convert(const char *from_code,
     return (max_dst_len - uileftlen);
 }
 
-}//namespace utility
-}//namespace diy
-#endif//utility_include_utility_encoding_code_convert_h
+} //namespace utility
+} //namespace diy
+#endif //utility_include_utility_encoding_code_convert_h

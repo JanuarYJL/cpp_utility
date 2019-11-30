@@ -6,9 +6,7 @@ namespace diy
 namespace utility
 {
 AcceptorTCP::AcceptorTCP(asio::io_service &io_service, manager_ptr_type session_manager_ptr, const std::string &address, const std::string &port)
-        : AcceptorImpl(io_service)
-        , acceptor_(io_service)
-        , session_manager_ptr_(session_manager_ptr)
+    : AcceptorImpl(io_service), acceptor_(io_service), session_manager_ptr_(session_manager_ptr)
 {
     resolver_type resolver(io_service_);
     endpoint_type endpoint = *resolver.resolve(address, port).begin();
@@ -59,5 +57,5 @@ void AcceptorTCP::handle_accept()
         handle_accept();
     });
 }
-}//namespace utility
-}//namespace diy
+} //namespace utility
+} //namespace diy
